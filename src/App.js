@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Cập nhật từ Switch sang Routes
+import ApplicantContextProvider from "./context/ApplicantContext";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { loadWithDelay } from "./utils/loadWithDelay";
+
+const LoginForm = lazy(() =>
+  loadWithDelay(() => import("./components/LoginForm"), 2000)
+);
+const ApplicantManagement = lazy(() =>
+  loadWithDelay(() => import("./components/ApplicantManagement"), 2000)
+);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <ApplicantContextProvider>
+        <div className="container">
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              {" "}
+              <Route path="/" element={<LoginForm />} />{" "}
+              <Route path="/applicants" element={<ApplicantManagement />} />{" "}
+            </Routes>
+          </Suspense>
+        </div>
+      </ApplicantContextProvider>
+    </Router>
   );
 }
 
